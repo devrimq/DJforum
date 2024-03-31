@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="container">
+        <div class="subforum">
+            {% if forums %}
+                <div class="subforum-title">
+                    <h1>Genel Bilgiler</h1>
+                </div>
+
+                {% for forum in forums %}
+                    <div class="subforum-row">
+                        <div class="subforum-icon subforum-column center">
+                            <i class="fa fa-gamepad"></i>
+                        </div>
+                        <div class="subforum-description subforum-column">
+                            <h4><a href="{{forum.get_url}}">{{forum.title}}</a></h4>
+                            <p>Açıklama: {{forum.description}} </p>
+                        </div>
+                        <div class="subforum-stats subforum-column center">
+                            <span>{{forum.num_posts}} Gönderi</span>
+                        </div>
+                        <div class="subforum-info subforum-column">
+                            {% if forum.last_post %}
+                                <b><a href="{{forum.last_post.get_url}}">Son gönderi</a></b> tarafından <a href="">{{forum.last_post.user.fullname|title}}</a> 
+                                <br>tarihinde <small>{{forum.last_post.date|date}}</small>
+                            {% else %}
+                                <span>Bu kategoride gönderi bulunmuyor.</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                {% endfor %}
+            {% else %}
+                <div class="subforum-title">
+                    <h1><i class="fa fa-frown-o"></i>&nbsp;Henüz hiç gönderiniz yok.</h1>
+                </div>
+            {% endif %}
+        </div>
+        <!-- Daha Fazlası-->
+        
+        
+        
+    </div>
+
+    <!-- Forum Bilgisi -->
+    <div class="forum-info">
+        <div class="chart">
+            Benim Forumum - İstatistikler &nbsp;<i class="fa fa-bar-chart"></i>
+        </div>
+        <span><u>{{num_posts}}</u> Gönderi, <u>{{num_categories}}</u> Kategoride <u>{{num_users}}</u> Üye tarafından yapıldı.</span><br>
+        {% if forums %}
+            <span>Son gönderi: <b><a href="{{last_post.get_url}}">{{last_post.title}}</a></b> tarihinde {{last_post.date|date}} - <a href="">{{last_post.user.fullname|title}}</a> tarafından yapıldı.</span>.<br>
+            <span>En son gönderilere göz atmak için <a href="{% url 'latest_posts' %}">buraya tıklayın</a>.</span><br>
+        {% endif %}
+    </div>
+
+{% endblock content %}

@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load hitcount_tags %}
+{% block content %}
+    <div class="container">
+        <!--Navigasyon-->
+        <div class="navigate">
+            <span><a href="{% url 'home' %}">Benim Forumum - Forumlar</a> >> <a href="{{forum.get_url}}">{{forum.title}}</a></span>
+        </div>
+        {% if posts %}
+            <!--Gönderiler tablosunu göster-->
+            <div class="posts-table">
+                <div class="table-head">
+                    <div class="status">Durum</div>
+                    <div class="konular">Konular</div>
+                    <div class="cevaplar">Cevaplar/Görüntüler</div>
+                    <div class="son-cevap">Son Cevap</div>
+                </div>
+
+                {% for post in posts %}
+                <div class="table-row">
+
+                    {% if post.closed == True %}
+                    <div class="status"><i class="fa fa-lock"></i></div>
+                    {% elif post.num_comments == 0 %}
+                    <div class="status"><i class="fa fa-frown-o"></i></div>
+                    {% elif post.num_comments > 0 and post.num_comments < 2 %}
+                    <div class="status"><i class="fa fa-book"></i></div>
+                    {% elif post.num_comments > 2 and post.num_comments < 4 %}
+                    <div class="status"><i class="fa fa-rocket"></i></div>
+                    {% elif post.num_comments >= 4 %}
+                    <div class="status"><i class="fa fa-fire"></i></div>
+                    
+                    {% endif %}
+
+
+                    <div class="konular">
+                        <a href="{{post.get_url}}">{{post.title}}</a>
+                        <br>
+                        <span>Başlatan: <b><a href="">{{post.user.fullname|title}}</a></b> .</span>
+                    </div>
+                    <div class="cevaplar">
+                        {{post.num_comments}} yorum <br> {% get_hit_count for post %} görüntüleme
+                    </div>
+
+                    {% if post.last_reply %}
+                    <div class="son-cevap">
+                        {{post.last_reply.date|date}}
+                        <br><b><a href="">{{post.last_reply.user.fullname|title}}</a></b> tarafından
+                    </div>
+                    {% else %}
+                    <div class="son-cevap">
+                        {{post.date|date}}
+                        <br><b><a href="">{{post.user.fullname|title}}</a></b> tarafından
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            {% else %}
+            <div class="subforum-title">
+                <h1><i class="fa fa-frown-o"></i>&nbsp;Henüz hiç gönderiniz yok.</h1>
+            </div>
+            {% endif %}
+            
+            
+        </div>
+        <!--Sayfalama başlar-->
+            {% if posts.is_paginated %}
+                <div class="pagination">
+                    sayfalar: {% for num_page in posts.paginator.page_range %} <a href="?page={{num_page}}">{{num_page}}</a> {% endfor %}
+                </div>
+            {% endif %}
+        <!--Sayfalama biter-->
+    </div>
+
+    <!-- <div class="note">
+        <span><i class="fa fa-frown-o"></i>&nbsp; 0 Etkileşimli Konu</span>&nbsp;&nbsp;&nbsp;<a href=""><i class="fa fa-share-square"></i></a><br>
+        <span><i class="fa fa-book"></i>&nbsp; Düşük Etkileşimli Konu</span>&nbsp;&nbsp;&nbsp;<a href=""><i class="fa fa-share-square"></i></a><br>
+        <span><i class="fa fa-fire"></i>&nbsp; Popüler Konu</span>&nbsp;&nbsp;&nbsp;<a href=""><i class="fa fa-share-square"></i></a><br>
+        <span><i class="fa fa-rocket"></i>&nbsp; Yüksek Etkileşimli Konu</span>&nbsp;&nbsp;&nbsp;<a href=""><i class="fa fa-share-square"></i></a><br>
+        <span><i class="fa fa-lock"></i>&nbsp; Kapalı Konu</span>&nbsp;&nbsp;&nbsp;<a href=""><i class="fa fa-share-square"></i></a><br>
+    </div> -->
+    {% endblock content %}

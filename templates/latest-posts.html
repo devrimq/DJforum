@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load hitcount_tags %}
+{% block content %}
+    <div class="container">
+        <!--Navigasyon-->
+        <div class="navigate">
+            <span>Son 10 Gönderi</span>
+        </div>
+        <!--Gönderiler tablosunu göster-->
+        <div class="posts-table">
+            <div class="table-head">
+                <div class="status">Durum</div>
+                <div class="konular">Konular</div>
+                <div class="cevaplar">Cevaplar/Görüntüler</div>
+                <div class="son-cevap">Son Cevap</div>
+            </div>
+
+            {% for post in posts %}
+            <div class="table-row">
+                <div class="status"><i class="fa fa-fire"></i></div>
+                <div class="konular">
+                    <a href="{{post.get_url}}">{{post.title}}</a>
+                    <br>
+                    <span><b><a href="">{{post.user.fullname|title}}</a></b> tarafından başlatıldı .</span>
+                </div>
+                <div class="cevaplar">
+                    {{post.num_comments}} yorum <br> {% get_hit_count for post %} görüntüleme
+                </div>
+
+                <div class="son-cevap">
+                    {{post.last_reply.date|date}}
+                    <br><b><a href="">{{post.last_reply.user.fullname|title}}</a></b> tarafından
+                </div>
+            </div>
+            {% endfor %}
+
+            
+            
+        </div>
+
+    {% endblock content %}
